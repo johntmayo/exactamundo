@@ -1,12 +1,13 @@
-import type { ReactElement } from 'react'
+import type { ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
-import { useApp } from '../context/AppContext'
-import { ROUTES } from '../routes'
+import { useEstimateSessionStore } from '../store/estimateSessionStore'
 
-export default function RequireSession({ children }: { children: ReactElement }) {
-  const { currentSession } = useApp()
-  if (!currentSession) {
-    return <Navigate to={ROUTES.UPLOAD} replace />
+export default function RequireSession({ children }: { children: ReactNode }) {
+  const session = useEstimateSessionStore((state) => state.session)
+
+  if (!session) {
+    return <Navigate to="/" replace />
   }
-  return children
+
+  return <>{children}</>
 }

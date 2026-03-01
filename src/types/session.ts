@@ -1,27 +1,6 @@
-/**
- * Estimate Review Helper – Data model (v1)
- * Aligned with README.md and SCREENS-v1-dwelling.md.
- *
- * Product decisions (v1):
- * - Resume: Show Resume screen when returning users hit the app and we find
- *   a saved session (e.g. after Landing or when choosing "Continue" from Settings).
- *   They can continue that session, start new, or delete the saved one.
- * - PDF: Do not persist. PDF is view-only in memory for the current session.
- *   Persist only session JSON (localStorage). Reduces surface area and avoids
- *   storing large binaries; user can re-upload if they return later.
- * - State: React state + Context for current session and flow (no Zustand/Redux).
- */
+export type LossType = 'fire' | 'wind' | 'water' | 'earthquake' | 'other'
 
-// --- Screen 3: Quick Setup ---
-export type LossType =
-  | 'fire'
-  | 'wind'
-  | 'water'
-  | 'earthquake'
-  | 'other'
-
-// --- Screen 6: Coverage Sections ---
-export interface CoverageSections {
+export interface CoverageSectionAnswers {
   dwelling: boolean
   buildingCodeUpgrades: boolean
   otherStructures: boolean
@@ -29,15 +8,9 @@ export interface CoverageSections {
   treesAndShrubs: boolean
 }
 
-// --- Screen 7: Overhead and Profit ---
-export type OpCheckChoice =
-  | 'yes'
-  | 'might-be'
-  | 'cannot-find'
-  | 'not-sure'
+export type OPCheckAnswer = 'yes-listed' | 'might-be' | 'cannot-find' | 'not-sure'
 
-// --- Screen 8: Systems Check (category ids match checklist order) ---
-export const SYSTEMS_BEFORE_WORK = [
+export const SYSTEM_CHECK_IDS = [
   'demolition',
   'debris-removal',
   'hazardous-material-testing',
@@ -45,14 +18,12 @@ export const SYSTEMS_BEFORE_WORK = [
   'land-survey',
   'site-preparation',
   'temporary-power',
+  'temporary-utilities',
   'temporary-toilet',
   'temporary-security-fencing',
-  'temporary-job-trailer',
-] as const
-
-export const SYSTEMS_STRUCTURE = [
+  'temporary-job-trailer-storage',
   'foundation',
-  'framing',
+  'framing-rough-carpentry',
   'roofing',
   'gutters-downspouts',
   'exterior-siding-eaves-trim',
@@ -63,24 +34,18 @@ export const SYSTEMS_STRUCTURE = [
   'sheet-metal-flashings',
   'erosion-control',
   'land-stabilization',
-] as const
-
-export const SYSTEMS_SYSTEMS = [
   'electrical',
   'plumbing',
   'hvac',
   'fire-sprinklers',
   'fire-safety-system',
   'security-system',
-  'intercom',
-  'telephone-cable-internet',
+  'intercom-system',
+  'telephone-cable-internet-wiring',
   'vacuum-system',
-  'water-filtration',
-  'septic-sewer',
+  'water-filtration-system',
+  'septic-system-sewer-tie-in',
   'drainage',
-] as const
-
-export const SYSTEMS_INTERIOR = [
   'drywall',
   'insulation',
   'flooring',
@@ -88,7 +53,7 @@ export const SYSTEMS_INTERIOR = [
   'marble-granite',
   'cabinets',
   'cabinet-hardware',
-  'plastic-laminate-countertops',
+  'plastic-laminate-cultured-countertops',
   'closet-packages',
   'stairs-railings',
   'millwork',
@@ -107,54 +72,45 @@ export const SYSTEMS_INTERIOR = [
   'light-fixtures',
   'work-benches-shelving',
   'weatherstripping',
-] as const
-
-export const SYSTEMS_EXTERIOR = [
   'driveway',
   'patios-walkways',
   'decks',
   'fencing',
   'retaining-walls',
   'landscaping',
-  'trees-shrubs',
-  'antenna-satellite',
-] as const
-
-export const SYSTEMS_SPECIAL = [
-  'fireplace',
+  'trees-and-shrubs',
+  'antenna-satellite-dish',
+  'fireplace-fireplace-doors',
   'garage-door-opener',
   'appliances',
-  'built-in-entertainment',
+  'built-in-entertainment-system',
   'jacuzzi-hot-tub',
   'sauna',
-] as const
-
-export const SYSTEMS_PROFESSIONAL = [
   'architectural-engineering-fees',
-  'permits-fees',
-  'title-24',
-  'decorator',
+  'permits-fees-plan-checking',
+  'title-24-calculations',
+  'decorator-interior-designer',
   'job-supervision',
   'scaffolding',
   'equipment',
-  'interim-cleanup',
+  'interim-job-clean-up',
   'final-janitorial',
   'material-tax',
 ] as const
 
-export type SystemCategoryId =
-  | (typeof SYSTEMS_BEFORE_WORK)[number]
-  | (typeof SYSTEMS_STRUCTURE)[number]
-  | (typeof SYSTEMS_SYSTEMS)[number]
-  | (typeof SYSTEMS_INTERIOR)[number]
-  | (typeof SYSTEMS_EXTERIOR)[number]
-  | (typeof SYSTEMS_SPECIAL)[number]
-  | (typeof SYSTEMS_PROFESSIONAL)[number]
+export type SystemCheckId = (typeof SYSTEM_CHECK_IDS)[number]
 
-export type SystemsMissingFollowUp = 'yes' | 'no' | 'not-sure'
+export type SystemsMissingChoice = 'yes' | 'no' | 'not-sure'
 
-// --- Screen 9: Room Selection ---
-export const ROOM_IDS = [
+export interface SystemsCheckAnswers {
+  foundCategories: SystemCheckId[]
+  missingApplied: {
+    choice: SystemsMissingChoice
+    note?: string
+  }
+}
+
+export const AREA_IDS = [
   'entry-foyer',
   'living-room',
   'dining-room',
@@ -169,118 +125,104 @@ export const ROOM_IDS = [
   'attic',
   'attached-garage',
   'porch-deck-patio',
-  'other-interior',
-  'other-exterior',
+  'other-interior-area',
+  'other-exterior-area',
 ] as const
 
-export type RoomId = (typeof ROOM_IDS)[number]
+export type AreaSelection = (typeof AREA_IDS)[number]
 
-// --- Screen 10: Room checklist (7 questions per room) ---
-export type StandardUpgradedUnsure = 'standard' | 'upgraded' | 'not-sure'
-export type YesNoUnsure = 'yes' | 'no' | 'not-sure'
-export type YesNo = 'yes' | 'no'
+export type StandardChoice = 'standard-basic' | 'upgraded-custom' | 'not-sure'
+export type YesNoUnsureChoice = 'yes' | 'no' | 'not-sure'
+export type YesNoChoice = 'yes' | 'no'
 
-export interface RoomAnswers {
-  floors: { choice: StandardUpgradedUnsure; note?: string }
-  wallsCeiling: { choice: StandardUpgradedUnsure; note?: string }
-  builtIns: { choice: YesNoUnsure; note?: string }
-  windows: { choice: StandardUpgradedUnsure; note?: string }
-  lightFixtures: { choice: StandardUpgradedUnsure; note?: string }
-  architecturalFeatures: { choice: YesNoUnsure; note?: string }
-  anythingElse: { choice: YesNo; note?: string }
+export interface AreaAnswers {
+  floors: { choice: StandardChoice; note?: string }
+  wallsCeilings: { choice: StandardChoice; note?: string }
+  builtIns: { choice: YesNoUnsureChoice; note?: string }
+  windows: { choice: StandardChoice; note?: string }
+  lightFixtures: { choice: StandardChoice; note?: string }
+  architecturalFeatures: { choice: YesNoUnsureChoice; note?: string }
+  anythingElse: { choice: YesNoChoice; note?: string }
 }
-
-// --- Screen 11: Site and Access ---
-export type SiteAccessChoice = YesNoUnsure
 
 export interface SiteAccessAnswers {
-  slopeOrHillside: { choice: SiteAccessChoice; note?: string }
-  higherCostArea: { choice: SiteAccessChoice; note?: string }
-  unusualConditions: { choice: SiteAccessChoice; note?: string }
-  otherStructures: { choice: YesNo; note?: string }
+  slopeHillsideOrAccessDifficulty: { choice: YesNoUnsureChoice; note?: string }
+  highConstructionCostArea: { choice: YesNoUnsureChoice; note?: string }
+  unusualSiteConditions: { choice: YesNoUnsureChoice; note?: string }
+  otherStructuresOnProperty: { choice: YesNoChoice; note?: string }
 }
 
-// --- Screen 12: Global Issues ---
 export type CodeUpgradesChoice =
-  | 'yes-in-estimate'
-  | 'mentioned-unsure'
-  | 'no-one-mentioned'
+  | 'yes-discussed-and-in-estimate'
+  | 'mentioned-but-unsure'
+  | 'not-mentioned'
   | 'not-sure'
 
-export type PermitsChoice = 'yes' | 'not-sure' | 'cannot-find'
+export type PermitsEngineeringChoice = 'yes-can-see' | 'not-sure' | 'cannot-find'
+export type RebuildChoice = 'same-home' | 'different-home' | 'not-decided'
 
-export type RebuildChoice = 'same' | 'different' | 'undecided'
-
-export interface GlobalIssuesAnswers {
+export interface GlobalAnswers {
   codeUpgrades: CodeUpgradesChoice
-  permitsEngineering: PermitsChoice
-  rebuildSameOrDifferent: RebuildChoice
-  anythingMissing: { choice: YesNoUnsure; note?: string }
+  permitsEngineeringInspections: PermitsEngineeringChoice
+  rebuildPlan: RebuildChoice
+  knownMissingOrWrongItems: { choice: YesNoUnsureChoice; note?: string }
 }
 
-// --- Session (README + all screens) ---
 export interface EstimateSession {
   id: string
   nickname: string
   lossType: LossType
-  /** User uploaded a PDF this session (file kept in memory only, not persisted). */
-  hasPdf: boolean
+  coverageSections: CoverageSectionAnswers
+  opCheck: OPCheckAnswer
+  systemsCheck: SystemsCheckAnswers
+  areas: AreaSelection[]
+  answersByArea: {
+    [areaId: string]: AreaAnswers
+  }
+  siteAndAccess: SiteAccessAnswers
+  globalAnswers: GlobalAnswers
+  pdfFileName?: string
   createdAt: string
   updatedAt: string
-  // Screen 6
-  coverageSections?: CoverageSections
-  // Screen 7
-  opCheck?: OpCheckChoice
-  // Screen 8
-  systemsChecked?: SystemCategoryId[]
-  systemsMissingFollowUp?: { choice: SystemsMissingFollowUp; note?: string }
-  // Screen 9
-  roomsSelected?: RoomId[]
-  // Screen 10
-  answersByRoom?: Partial<Record<RoomId, RoomAnswers>>
-  // Screen 11
-  siteAccess?: SiteAccessAnswers
-  // Screen 12
-  globalIssues?: GlobalIssuesAnswers
 }
 
-// --- Helpers for creating blank / default session ---
-export function createEmptyCoverageSections(): CoverageSections {
+export function createEmptyEstimateSession(
+  seed: Partial<Pick<EstimateSession, 'nickname' | 'lossType'>> = {}
+): EstimateSession {
+  const now = new Date().toISOString()
   return {
-    dwelling: false,
-    buildingCodeUpgrades: false,
-    otherStructures: false,
-    landscaping: false,
-    treesAndShrubs: false,
-  }
-}
-
-export function createEmptyRoomAnswers(): RoomAnswers {
-  return {
-    floors: { choice: 'standard' },
-    wallsCeiling: { choice: 'standard' },
-    builtIns: { choice: 'no' },
-    windows: { choice: 'standard' },
-    lightFixtures: { choice: 'standard' },
-    architecturalFeatures: { choice: 'no' },
-    anythingElse: { choice: 'no' },
-  }
-}
-
-export function createEmptySiteAccessAnswers(): SiteAccessAnswers {
-  return {
-    slopeOrHillside: { choice: 'no' },
-    higherCostArea: { choice: 'no' },
-    unusualConditions: { choice: 'no' },
-    otherStructures: { choice: 'no' },
-  }
-}
-
-export function createEmptyGlobalIssuesAnswers(): GlobalIssuesAnswers {
-  return {
-    codeUpgrades: 'not-sure',
-    permitsEngineering: 'not-sure',
-    rebuildSameOrDifferent: 'undecided',
-    anythingMissing: { choice: 'no' },
+    id: crypto.randomUUID(),
+    nickname: seed.nickname ?? 'Untitled Review',
+    lossType: seed.lossType ?? 'other',
+    coverageSections: {
+      dwelling: false,
+      buildingCodeUpgrades: false,
+      otherStructures: false,
+      landscaping: false,
+      treesAndShrubs: false,
+    },
+    opCheck: 'not-sure',
+    systemsCheck: {
+      foundCategories: [],
+      missingApplied: {
+        choice: 'not-sure',
+      },
+    },
+    areas: [],
+    answersByArea: {},
+    siteAndAccess: {
+      slopeHillsideOrAccessDifficulty: { choice: 'not-sure' },
+      highConstructionCostArea: { choice: 'not-sure' },
+      unusualSiteConditions: { choice: 'not-sure' },
+      otherStructuresOnProperty: { choice: 'no' },
+    },
+    globalAnswers: {
+      codeUpgrades: 'not-sure',
+      permitsEngineeringInspections: 'not-sure',
+      rebuildPlan: 'not-decided',
+      knownMissingOrWrongItems: { choice: 'not-sure' },
+    },
+    createdAt: now,
+    updatedAt: now,
   }
 }
