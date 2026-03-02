@@ -1,39 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import ScreenLayout from '../components/ScreenLayout'
 
-const STEPS = [
-  {
-    title: 'Coverage sections',
-    description:
-      "We'll check which types of coverage are included in your estimate — things like your home structure, code upgrades, and outbuildings.",
-  },
-  {
-    title: 'Overhead & profit',
-    description:
-      'We\'ll look for a line item called overhead and profit. When a general contractor coordinates repairs, insurers are typically required to include it.',
-  },
-  {
-    title: 'Building systems',
-    description:
-      "We'll go through a list of common construction categories and flag anything that appears to be missing from your estimate.",
-  },
-  {
-    title: 'Room by room',
-    description:
-      "For each room in your home, we'll ask simple questions about what was there — so you can compare it to what your estimate covers.",
-  },
-  {
-    title: 'Site conditions',
-    description:
-      "We'll ask about things like lot slope or difficult access that can affect construction costs, and check whether your estimate accounts for them.",
-  },
-  {
-    title: 'Final questions',
-    description:
-      'A few last questions about code upgrades, permits, and anything else that seems missing or wrong.',
-  },
-]
-
 function HowItWorks() {
   const navigate = useNavigate()
 
@@ -45,34 +12,33 @@ function HowItWorks() {
         </header>
 
         <div className="screen-body">
-          <p>
-            We&apos;ll walk through your estimate in six short sections. Each
-            one focuses on a different part of what your insurance company
-            should cover.
-          </p>
-          <p>
-            You don&apos;t need to be a contractor. Just answer what you
-            know &mdash; it&apos;s fine to say &ldquo;not sure&rdquo; along
-            the way.
-          </p>
+          <p>We&apos;re going to do two things:</p>
 
-          <ol className="panel how-it-works-steps">
-            {STEPS.map((step, i) => (
-              <li key={i} className="how-it-works-step">
-                <span className="how-it-works-step-num" aria-hidden="true">
-                  {i + 1}
-                </span>
-                <div>
-                  <strong>{step.title}</strong>
-                  <p>{step.description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <div className="panel">
+            <p>
+              <strong>1. Check the big sections of your estimate.</strong>
+              <br />
+              Insurance estimates for homes are usually organized by system
+              &mdash; things like Electrical, Plumbing, Roofing, and so on.
+              We&apos;ll ask whether each system appears in yours.
+            </p>
+            <p>
+              <strong>2. Check each room.</strong>
+              <br />
+              Then we&apos;ll go room by room and ask a few questions about
+              what your home was like before the damage. This helps you spot
+              things the estimate might have missed or gotten wrong.
+            </p>
+            <p>
+              At the end, we&apos;ll give you a clear list of questions to
+              raise with your adjuster.
+            </p>
+          </div>
 
           <div className="tip">
-            If you have your estimate open nearby, it will help. You can
-            refer back to it as we go through each section.
+            💡 It helps to have your estimate open nearby &mdash; on screen or
+            printed &mdash; as you go through this. You don&apos;t need to read
+            every line; we&apos;ll tell you what to look for.
           </div>
 
           <div className="actions">
@@ -80,7 +46,7 @@ function HowItWorks() {
               className="button primary"
               onClick={() => navigate('/coverage')}
             >
-              Let&apos;s go &rarr;
+              Let&apos;s start &rarr;
             </button>
           </div>
         </div>

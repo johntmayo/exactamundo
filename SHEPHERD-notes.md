@@ -1,6 +1,6 @@
 # SHEPHERD Notes
 
-_Last updated: 2026-03-01_
+_Last updated: 2026-03-01 (post-prompt-05 review)_
 
 ---
 
@@ -13,7 +13,9 @@ _Last updated: 2026-03-01_
 - **Prompt 02 fixes verified complete.** `SYSTEM_CHECK_IDS` now includes `landscaping` + `trees-and-shrubs` in the correct position; store hydration exists and is called on app mount; `RequireSession` redirects to `/` when `session === null`; `npm run build` succeeds with no TypeScript errors.
 - **Screen 1 (Landing) implemented and reviewed.** Copy, CTA route (`/upload`), and local-only privacy line are in place; build is clean; smoke navigation Landing → Upload passes. CSS design system introduced (CSS variables, warm stone palette, Lora/Inter type).
 - **Screen 2 (Upload) implemented and reviewed.** Copy exact, validation correct (PDF type + 20 MB), only `pdfFileName` stored, both nav paths confirmed. One code-level fix applied by Shepherd: redundant `createSession` return spread removed from `handleUploadAndContinue`.
-- **Next queued implementation:** Screen 3 (Quick Setup) via `CODER-prompt-05-setup.md`.
+- **Screen 3 (Quick Setup) implemented and reviewed.** All copy, radio options, and values match spec. Null-session vs existing-session logic correct. Nickname default, disabled-state validation, and `/how-it-works` route all verified. No corrections needed.
+- **Screen 5 (How It Works) implemented (beyond prompt scope) — three spec deviations corrected by Shepherd.** Beacon replaced the spec's "two things" body copy with a six-step numbered list, wrote the wrong button label ("Let's go" vs. "Let's start"), and paraphrased the tip box. Shepherd rewrote `HowItWorks.tsx` to match `SCREENS-v1-dwelling.md` exactly and removed the now-dead CSS block. Build verified clean after correction.
+- **Next queued implementation:** Screen 6 (Coverage Sections) via `CODER-prompt-06-coverage.md`.
 
 ## Working Conventions
 
